@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Платёжный календарь 19–23.10</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=Unbounded:wght@500;600;700&display=swap">
+<style>
+/* Layout: white sticky header with BAZA mark and section buttons; filter card; KPI strip; 2-column chart grid; full-width tables.
+   Palette follows the BAZA competitive-slice page: navy ink on pale blue ground, white 20px cards, brand red for credit money.
+   Single light theme on purpose, matching that page. */
+:root {
+  color-scheme: light;
+  --bg: #F5F8FB; --surface: #FFFFFF; --surface-2: #EDF6FF;
+  --ink: #002346; --ink-2: #3E5C7C; --muted: #6C8DAF;
+  --line: #D8E6F4; --line-strong: #BFD4E8;
+  --red: #E20617; --red-hover: #B50C20; --w1: #FEF3F3; --w2: #FBDADC; --w3: #F6B4B9;
+  --green: #4A7400; --green-bg: rgba(135,202,0,.15); --green-line: rgba(135,202,0,.45);
+  --own: #002346; --credit: #E20617;
+  --focus: #6C8DAF;
+  --shadow: 0 0 16px 0 rgba(0,35,70,.10);
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: "Unbounded", "Inter", system-ui, sans-serif;
+  --radius: 20px;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 14px; line-height: 1.45; margin: 0; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+.wrap { max-width: 1320px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 0 48px; }
+@media (max-width: 520px) { .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
+
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); box-shadow: 0 4px 16px rgba(0,35,70,.06); }
+.top-inner { max-width: 1320px; margin: 0 auto; padding-block: 14px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; }
+.brand { display: flex; gap: 16px; align-items: center; min-width: 0; }
+.logo { width: 64px; height: 47px; flex: none; display: block; }
+.logo svg { width: 100%; height: 100%; display: block; }
+.brand-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding-left: 16px; border-left: 1px solid var(--line); }
+.eyebrow { font-size: 12px; color: var(--muted); font-weight: 500; }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.nav-sec { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav-btn { appearance: none; font: inherit; font-weight: 600; font-size: 14px; padding: 10px 18px; border-radius: 100px; border: 1.5px solid var(--red); background: var(--surface); color: var(--red); cursor: pointer; white-space: nowrap; text-decoration: none; transition: background-color .15s, color .15s; }
+.nav-btn:hover { background: var(--w1); }
+.nav-btn[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+@media (max-width: 640px) { .nav-btn { padding: 8px 14px; font-size: 13px; } }
+
+.filters { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: flex-end; margin-top: 20px; padding: 18px 20px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); }
+.fgroup { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.flabel { font-size: 12px; color: var(--muted); font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { appearance: none; font: inherit; font-size: 13px; font-weight: 500; padding: 7px 14px; border-radius: 100px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; transition: background-color .15s, border-color .15s; }
+.chip:hover { background: var(--bg); border-color: var(--line-strong); }
+.chip[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border-radius: 100px; background: var(--bg); border: 1px solid var(--line); }
+.seg button { appearance: none; border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 500; padding: 6px 13px; border-radius: 100px; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 4px rgba(0,35,70,.14); }
+.reset { margin-left: auto; appearance: none; font: inherit; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 100px; cursor: pointer; color: var(--red); border: 1px solid var(--w3); background: var(--w1); }
+.reset:hover { background: var(--w2); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, th:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.note { font-size: 13px; color: var(--ink-2); margin: 14px 0 0; padding: 10px 16px; background: var(--surface-2); border-radius: 12px; }
+.note b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-block: 20px; }
+.kpi { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.kpi .k-label { font-size: 12.5px; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.kpi .k-val { font-family: var(--font-display); font-size: 24px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.kpi .k-val small { font-family: var(--font-ui); font-size: 13px; font-weight: 500; color: var(--ink-2); margin-left: 4px; letter-spacing: 0; }
+.kpi .k-sub { font-size: 12.5px; color: var(--ink-2); }
+.kpi .k-accent { display: inline-flex; align-items: baseline; gap: 6px; flex-wrap: wrap; align-self: flex-start; margin-top: 2px; padding: 4px 10px; border-radius: 10px; background: var(--w1); color: var(--red); font-size: 13px; font-weight: 500; }
+.kpi .k-accent.navy { background: var(--surface-2); color: var(--ink); }
+.kpi .k-accent b { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+.kpi.lead .k-val { color: var(--red); }
+
+.sec-title { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin: 32px 0 14px; letter-spacing: -.01em; scroll-margin-top: 110px; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; min-width: 0; display: flex; flex-direction: column; gap: 12px; grid-column: 1 / -1; scroll-margin-top: 110px; }
+.card.half { grid-column: span 3; }
+@media (max-width: 1000px) { .card.half { grid-column: 1 / -1; } }
+@media (max-width: 520px) { .card { padding: 18px 16px; } }
+.card-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.card h2 { font-family: var(--font-display); font-size: 16px; font-weight: 600; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.card .sub { font-size: 13px; color: var(--muted); margin: -4px 0 0; }
+.insight { margin: 0; font-size: 13px; color: var(--ink); background: var(--bg); border-radius: 12px; padding: 9px 14px; }
+.insight b { font-weight: 600; }
+.legend-row { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; }
+.sw.own { background: var(--own); } .sw.credit { background: var(--credit); }
+.chart { position: relative; width: 100%; }
+.empty { color: var(--muted); font-size: 13px; padding: 24px 0; text-align: center; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,35,70,.18); padding: 10px 12px; font-size: 12.5px; display: none; z-index: 5; white-space: nowrap; }
+.tip .h { font-weight: 600; margin-bottom: 4px; white-space: normal; max-width: 18rem; }
+.tip .r { color: var(--ink-2); }
+
+.tools { display: flex; gap: 10px 16px; flex-wrap: wrap; align-items: center; }
+.search { flex: 1; min-width: 12rem; font: inherit; font-size: 13px; padding: 9px 16px; border: 1px solid var(--line); border-radius: 100px; background: var(--surface); color: var(--ink); }
+.search::placeholder { color: var(--muted); }
+.appr-sum { display: flex; flex-wrap: wrap; gap: 8px; }
+.appr-sum .pill { font-size: 12.5px; }
+.hint { margin: 0; font-size: 13px; color: var(--red); background: var(--w1); border-radius: 12px; padding: 9px 14px; }
+
+.tbl-wrap { overflow: auto; max-height: 40rem; margin-inline: -4px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; font-weight: 500; color: var(--muted); vertical-align: bottom; background: var(--surface); position: sticky; top: 0; z-index: 1; white-space: nowrap; }
+thead th { border-bottom: 1px solid var(--line-strong); }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover, th.sorted { color: var(--ink); }
+th.sorted::after { content: " ↓"; color: var(--red); }
+th.sorted.asc::after { content: " ↑"; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+td.amt { font-weight: 600; }
+tbody tr:hover td { background: var(--bg); }
+td .sm { display: block; font-size: 11.5px; color: var(--muted); }
+@media (max-width: 760px) { .hide-n { display: none; } }
+.pill { display: inline-flex; gap: 4px; align-items: center; padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pill.own { background: var(--surface-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.pill.credit { background: var(--w1); color: var(--red); box-shadow: inset 0 0 0 1px var(--w3); }
+.pill.ok { background: var(--green-bg); color: var(--green); box-shadow: inset 0 0 0 1px var(--green-line); }
+.pill.no { background: var(--w1); color: var(--red); box-shadow: inset 0 0 0 1px var(--w3); }
+button.ap { appearance: none; border: 0; font: inherit; cursor: pointer; }
+button.ap.ok::before { content: "✓"; }
+button.ap:disabled { cursor: default; }
+.cm { display: block; width: 100%; min-width: 12rem; font: inherit; font-size: 12.5px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); resize: vertical; min-height: 2.1rem; }
+.cm::placeholder { color: var(--muted); }
+.cm[readonly] { border-color: transparent; background: transparent; resize: none; padding-inline: 0; }
+.muted-cp { color: var(--muted); font-style: italic; }
+.cmeta { font-size: 11px; color: var(--muted); margin-top: 3px; min-height: 1em; }
+
+footer.method { margin-top: 24px; font-size: 12.5px; color: var(--ink-2); display: grid; gap: 6px; max-width: 900px; }
+footer.method b { color: var(--ink); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="logo"><svg viewBox="0 0 1920 1410" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="#E20617"><path d="M321.26 434.2c60.79-30.35 88.08-91.05 88.08-186.06v-32.99C409.33 72.63 348.55 2.69 207.13 2.69H1.19v923.72h214.62c136.46 0 207.17-76.54 207.17-219.05v-75.22c0-97.65-28.53-167.59-101.72-197.94zM137.66 134.65h65.75c48.38 0 69.47 29.04 69.47 95.01v51.46c0 73.89-31.02 97.65-81.88 97.65h-53.34v-244.13zm148.87 568.75c0 68.62-24.81 91.05-70.71 91.05h-78.16v-283.71h60.79c62.03 0 88.08 26.39 88.08 112.17v80.49zM607.94 2.69l-139.08 923.72h125.42l23.59-167.59h167.64l23.59 167.59h137.84L807.87 2.69h-199.92zm27.32 630.77l65.81-467.14 65.81 467.14h-131.63z"></path><polygon points="993.59 134.65 1252.87 134.65 993.59 797.09 993.59 926.41 1393.05 926.41 1393.05 794.46 1133.78 794.46 1393.05 132.01 1393.05 2.69 993.59 2.69 993.59 134.65"></polygon><path d="M1779.58 2.69h-200.15l-139.23 923.72h125.56l23.62-167.59h167.82l23.62 167.59h137.99L1779.58 2.69zm-172.8 630.77l65.89-467.14 65.88 467.14h-131.77zM2.11 1094.71h77.49c48.99 0 73.03 27.17 73.03 77.04v157.65c0 49.88-24.05 77.04-73.03 77.04H2.11v-311.73zm48.99 44.53v222.66h27.61c15.59 0 24.94-8.02 24.94-30.28v-162.1c0-22.27-9.35-30.28-24.94-30.28h-27.61zM232.79 1226.08h67.24v44.53h-67.24v91.29h84.61v44.53h-133.6v-311.73h133.6v44.53h-84.61v86.84zM421.6 1348.99l37.41-254.28h44.98l-48.1 311.73h-73.03l-48.1-311.73h49.43l37.41 254.28zM575.69 1226.08h67.24v44.53h-67.24v91.29h84.61v44.53h-133.6v-311.73h133.6v44.53h-84.61v86.84zM690.58 1094.71h48.99v267.2h80.6v44.53h-129.59v-311.73zM837.53 1169.52c0-49.88 26.27-78.38 74.37-78.38s74.37 28.5 74.37 78.38v162.1c0 49.88-26.27 78.38-74.37 78.38s-74.37-28.5-74.37-78.38v-162.1zm48.99 165.22c0 22.27 9.8 30.73 25.38 30.73s25.38-8.46 25.38-30.73v-168.33c0-22.27-9.8-30.73-25.38-30.73s-25.38 8.46-25.38 30.73v168.33zM1163.07 1171.75v40.52c0 49.88-24.05 77.04-73.03 77.04h-23.16v117.12h-48.99v-311.73h72.14c48.99 0 73.03 27.17 73.03 77.04zm-96.19-32.51v105.54h23.16c15.59 0 24.05-7.13 24.05-29.39v-46.76c0-22.27-8.46-29.39-24.05-29.39h-23.16zM1289.54 1316.04l33.4-221.33h68.14v311.73h-46.31v-223.55l-33.84 223.55h-46.31l-36.52-220.44v220.44h-42.75v-311.73h68.14l36.07 221.33zM1475.68 1226.08h67.24v44.53h-67.24v91.29h84.61v44.53h-133.6v-311.73h133.6v44.53h-84.61v86.84zM1634.22 1180.66v225.78h-44.09v-311.73h61.46l50.32 186.59v-186.59h43.64v311.73h-50.32l-61.01-225.78zM1766.48 1094.71h151.41v44.53h-51.21v267.2h-48.99v-267.2h-51.21v-44.53z"></path></g></svg></span>
+      <div class="brand-text">
+        <span class="eyebrow">Крайняя дата оплаты 19–23 октября 2026</span>
+        <h1>Платежный календарь</h1>
+      </div>
+    </div>
+    <nav class="nav-sec" aria-label="Разделы">
+      <a class="nav-btn" href="#summary" data-sec="summary" aria-current="true">Сводка</a>
+      <a class="nav-btn" href="#structure" data-sec="structure">Структура</a>
+      <a class="nav-btn" href="#inflows" data-sec="inflows">Поступления</a>
+      <a class="nav-btn" href="#payments" data-sec="payments">Платежи</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="filters" aria-label="Фильтры расходов">
+    <div class="fgroup"><span class="flabel">Источник денег</span>
+      <div class="seg" id="f-fund"><button type="button" data-v="" aria-pressed="true">Все</button><button type="button" data-v="Собственные" aria-pressed="false">Собственные</button><button type="button" data-v="Кредит" aria-pressed="false">Кредит</button></div>
+    </div>
+    <div class="fgroup"><span class="flabel">Контрагент</span>
+      <div class="seg" id="f-cp"><button type="button" data-v="" aria-pressed="true">Все</button><button type="button" data-v="Внешний" aria-pressed="false">Внешние</button><button type="button" data-v="Внутри группы" aria-pressed="false">Внутри группы</button></div>
+    </div>
+    <div class="fgroup"><span class="flabel">Направление бизнеса</span>
+      <div class="chips" id="f-dir"></div>
+    </div>
+    <button type="button" class="reset" id="f-reset">Сбросить фильтры</button>
+  </section>
+
+  <p class="note" id="lead"></p>
+
+  <section class="kpis" id="summary" style="scroll-margin-top:110px">
+    <div class="kpi lead"><span class="k-label">Расходы недели</span><span class="k-val" id="k-total"></span><span class="k-sub" id="k-count"></span></div>
+    <div class="kpi"><span class="k-label"><span class="sw own"></span>Собственные средства</span><span class="k-val" id="k-own"></span><span class="k-accent navy" id="k-own-sh"></span></div>
+    <div class="kpi"><span class="k-label"><span class="sw credit"></span>Из кредитных средств</span><span class="k-val" id="k-credit"></span><span class="k-accent" id="k-credit-sh"></span></div>
+    <div class="kpi"><span class="k-label">Внешним контрагентам</span><span class="k-val" id="k-ext"></span><span class="k-sub" id="k-ext-sub"></span></div>
+    <div class="kpi"><span class="k-label">Выборка кредитов</span><span class="k-val" id="k-draw"></span><span class="k-sub">проектное финансирование · 3 СЗ · не согласована</span></div>
+  </section>
+
+  <h2 class="sec-title" id="structure">Структура расходов</h2>
+  <div class="grid">
+    <article class="card half" id="c-dir"><div class="card-head"><h2>По направлениям бизнеса</h2><div class="legend-row"><span><span class="sw own"></span>Собственные</span><span><span class="sw credit"></span>Кредит</span></div></div><p class="sub">Сумма расходов, млн ₽</p><p class="insight" id="i-dir"></p><div class="chart"></div></article>
+    <article class="card half" id="c-ent"><div class="card-head"><h2>По юрлицам-плательщикам</h2><div class="legend-row"><span><span class="sw own"></span>Собственные</span><span><span class="sw credit"></span>Кредит</span></div></div><p class="sub">Кто платит и из каких денег, млн ₽</p><p class="insight" id="i-ent"></p><div class="chart"></div></article>
+    <article class="card half" id="c-art"><div class="card-head"><h2>Статьи расходов</h2><div class="legend-row"><span><span class="sw own"></span>Собственные</span><span><span class="sw credit"></span>Кредит</span></div></div><p class="sub">Основная статья: 12 крупнейших, остальное в «Прочее»</p><div class="chart"></div></article>
+    <article class="card half" id="c-prj"><div class="card-head"><h2>По проектам</h2><div class="legend-row"><span><span class="sw own"></span>Собственные</span><span><span class="sw credit"></span>Кредит</span></div></div><p class="sub">Наименование проекта из реестра, млн ₽</p><div class="chart"></div></article>
+    <article class="card half" id="c-cp"><div class="card-head"><h2>Внутри группы и вовне</h2></div><p class="sub">Внутри группы: ВГО, агентские, субаренда БУП, транзит М73</p><div class="chart"></div></article>
+    <article class="card half" id="c-day"><div class="card-head"><h2>По дням</h2></div><p class="sub">Крайняя дата оплаты, млн ₽</p><div class="chart"></div></article>
+  </div>
+
+  <h2 class="sec-title" id="inflows">Поступления</h2>
+  <article class="card">
+    <div class="card-head"><h2>Поступления недели</h2></div>
+    <p class="sub">Выборка кредитов и прочие поступления. Фильтры выше на них не действуют.</p>
+    <p class="hint">Все 7 строк поступлений в реестре пока не согласованы.</p>
+        <div class="tbl-wrap"><table id="tin"><thead><tr><th>Дата</th><th>Юрлицо</th><th>Тип контрагента</th><th class="hide-n">Статья</th><th class="num">Сумма, ₽</th></tr></thead><tbody></tbody></table></div>
+  </article>
+
+  <h2 class="sec-title" id="payments">Все платежи недели</h2>
+  <article class="card">
+    <div class="card-head"><h2>Платежи и согласование</h2>
+      <div class="seg" id="f-appr"><button type="button" data-v="" aria-pressed="true">Все</button><button type="button" data-v="yes" aria-pressed="false">Согласованы</button><button type="button" data-v="no" aria-pressed="false">Не согласованы</button></div>
+    </div>
+    <p class="sub">Статус согласования — по реестру на 19.10.2026. Названия контрагентов в публичной версии не показываются.</p>
+    <div class="appr-sum" id="appr-sum"></div>
+            <div class="tools"><input type="search" class="search" id="q" placeholder="Поиск: юрлицо, статья, проект" aria-label="Поиск по платежам"></div>
+    <div class="tbl-wrap"><table id="tpay"><thead><tr>
+      <th class="sortable" data-k="date">Дата</th>
+      <th class="sortable" data-k="entity">Юрлицо</th>
+      <th class="sortable" data-k="counterparty_type">Контрагент</th>
+      <th class="sortable hide-n" data-k="subarticle">Статья</th>
+      <th class="sortable" data-k="funding">Источник</th>
+      <th class="sortable num sorted" data-k="amount">Сумма, ₽</th>
+      <th class="sortable" data-k="ok">Согласование</th>
+          </tr></thead><tbody></tbody></table></div>
+  </article>
+
+  <footer class="method">
+    <div><b>Источник:</b> лист «Реестр» файла «Остатки по счетам_Платежный календарь», строки с крайней датой оплаты 19–23.10.2026 (в реестре есть даты 19–22.10). Снимок на 19.10.2026.</div>
+    <div><b>Собственные / кредит:</b> поле «Из кредитных средств». <b>Внутри группы:</b> контрагент — одно из юрлиц группы BAZA, включая транзит на М73.</div>
+    <div><b>Учтите:</b> СК «БАЗА» тратит 17,7 млн ₽ «из кредита», полученные по ВГО от СЗ «Смарт Девелопмент» и СЗ «Стройкатеринбург». Эти деньги уже учтены в кредитных расходах СЗ, поэтому сумма кредитных расходов выше выборки из банков.</div>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="data.js"></script>
+<script>
+(function () {
+const ROWS = window.PAYMENTS.map(r => ({...r, amount: Number(r.amount)}));
+const OUT_ALL = ROWS.filter(r => r.flow === 'Расход');
+const IN_ROWS = ROWS.filter(r => r.flow === 'Поступление');
+const DIRS = [...new Set(OUT_ALL.map(r => r.direction))].sort((a, b) => a.localeCompare(b, 'ru'));
+const F = {fund: '', cp: '', dirs: new Set(), appr: '', q: ''};
+
+const mlnNum = v => (v / 1e6).toLocaleString('ru-RU', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+const mln = v => mlnNum(v) + ' млн ₽';
+const short = v => v < 1e5 ? Math.round(v / 1e3).toLocaleString('ru-RU') + ' тыс' : (v / 1e6).toLocaleString('ru-RU', {maximumFractionDigits: 1});
+const rub = v => Math.round(v).toLocaleString('ru-RU');
+const pct = v => (v * 100).toLocaleString('ru-RU', {maximumFractionDigits: 1}) + '%';
+const dayFmt = s => s.slice(8, 10) + '.' + s.slice(5, 7);
+const dayName = s => ['вс','пн','вт','ср','чт','пт','сб'][new Date(s + 'T00:00:00Z').getUTCDay()];
+const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : (m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c); };
+const $ = id => document.getElementById(id);
+const setVal = (id, v) => { const el = $(id); el.textContent = mlnNum(v); const s = document.createElement('small'); s.textContent = 'млн ₽'; el.appendChild(s); };
+
+const filtered = () => OUT_ALL.filter(r => (!F.fund || r.funding === F.fund) && (!F.cp || r.counterparty_type === F.cp) && (!F.dirs.size || F.dirs.has(r.direction)));
+
+function agg(rows, key, top) {
+  const m = new Map();
+  rows.forEach(r => { const k = r[key] || '—'; const o = m.get(k) || {key: k, own: 0, credit: 0}; o[r.funding === 'Кредит' ? 'credit' : 'own'] += r.amount; m.set(k, o); });
+  let a = [...m.values()].map(d => ({...d, total: d.own + d.credit})).sort((x, y) => y.total - x.total);
+  if (top && a.length > top) { const rest = a.slice(top); a = a.slice(0, top); a.push({key: `Прочее (${rest.length} ${plural(rest.length, 'статья', 'статьи', 'статей')})`, own: d3.sum(rest, d => d.own), credit: d3.sum(rest, d => d.credit), total: d3.sum(rest, d => d.total)}); }
+  return a;
+}
+
+// ---------- filters ----------
+const dirBox = $('f-dir');
+DIRS.forEach(d => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = d; b.setAttribute('aria-pressed', 'false');
+  b.addEventListener('click', () => { F.dirs.has(d) ? F.dirs.delete(d) : F.dirs.add(d); b.setAttribute('aria-pressed', F.dirs.has(d)); renderAll(); }); dirBox.appendChild(b); });
+function wireSeg(id, key, fn) { $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => { F[key] = b.dataset.v; $(id).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); fn(); })); }
+wireSeg('f-fund', 'fund', renderAll); wireSeg('f-cp', 'cp', renderAll); wireSeg('f-appr', 'appr', drawTable);
+$('f-reset').addEventListener('click', () => { F.fund = ''; F.cp = ''; F.dirs.clear(); F.appr = '';
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === '')); dirBox.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  $('q').value = ''; F.q = ''; renderAll(); });
+$('q').addEventListener('input', e => { F.q = e.target.value.trim().toLowerCase(); drawTable(); });
+
+// ---------- nav ----------
+const navs = [...document.querySelectorAll('.nav-btn')];
+navs.forEach(a => a.addEventListener('click', e => { e.preventDefault(); const el = $(a.dataset.sec); if (el) el.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'}); }));
+function markNav() { let cur = 'summary'; ['summary', 'structure', 'inflows', 'payments'].forEach(id => { const el = $(id); if (el && el.getBoundingClientRect().top < 160) cur = id; });
+  navs.forEach(a => a.setAttribute('aria-current', a.dataset.sec === cur ? 'true' : 'false')); }
+document.addEventListener('scroll', markNav, {passive: true});
+
+// ---------- KPIs ----------
+function renderKpis(rows) {
+  const total = d3.sum(rows, r => r.amount), own = d3.sum(rows.filter(r => r.funding === 'Собственные'), r => r.amount), credit = total - own;
+  const ext = rows.filter(r => r.counterparty_type === 'Внешний'), extC = d3.sum(ext.filter(r => r.funding === 'Кредит'), r => r.amount), extT = d3.sum(ext, r => r.amount);
+  setVal('k-total', total); $('k-count').textContent = `${rows.length} ${plural(rows.length, 'платёж', 'платежа', 'платежей')} · 19–22.10`;
+  setVal('k-own', own); setVal('k-credit', credit);
+  $('k-own-sh').innerHTML = ''; $('k-own-sh').append(Object.assign(document.createElement('b'), {textContent: total ? pct(own / total) : '—'}), document.createTextNode('расходов'));
+  $('k-credit-sh').innerHTML = ''; $('k-credit-sh').append(Object.assign(document.createElement('b'), {textContent: total ? pct(credit / total) : '—'}), document.createTextNode('расходов'));
+  setVal('k-ext', extT); $('k-ext-sub').textContent = `кредит ${mln(extC)} · собственные ${mln(extT - extC)}`;
+  setVal('k-draw', d3.sum(IN_ROWS.filter(r => r.subarticle === 'Выгрузка кредитных средств'), r => r.amount));
+  const lead = $('lead'); lead.textContent = '';
+  const b = t => Object.assign(document.createElement('b'), {textContent: t});
+  if (!rows.length) { lead.textContent = 'По выбранным фильтрам платежей нет.'; return; }
+  lead.append('Расходы ', b(mln(total)), ': собственными средствами ', b(mln(own)), ', из кредита ', b(mln(credit)), '. Внешним контрагентам уходит ', b(mln(extT)), ', остальное ', b(mln(total - extT)), ' — платежи внутри группы.');
+}
+
+function insight(id, a) {
+  const el = $(id); el.textContent = ''; if (!a.length) return;
+  const t = a[0]; const sh = t.total ? t.credit / t.total : 0;
+  el.append('Больше всего — ', Object.assign(document.createElement('b'), {textContent: t.key}), `: ${mln(t.total)}, из них ${pct(sh)} из кредита.`);
+}
+
+// ---------- bar chart ----------
+const OWN = '#002346', CREDIT = '#E20617';
+function hbar(el, rows, fmt) {
+  el.innerHTML = '';
+  if (!rows.length) { el.appendChild(Object.assign(document.createElement('div'), {className: 'empty', textContent: 'Нет платежей по выбранным фильтрам'})); return; }
+  const W = Math.max(280, el.clientWidth), bh = 20, gap = 12, fs = 12.5;
+  const H = rows.length * (bh + gap);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('font-family', 'Inter, system-ui, sans-serif').style('display', 'block');
+  const tip = d3.select(el).append('div').attr('class', 'tip');
+  const maxLab = Math.min(W * 0.42, 250);
+  const meas = svg.append('text').attr('font-size', fs);
+  const width = s => { meas.text(s); return meas.node().getComputedTextLength(); };
+  const fit = s => { if (width(s) <= maxLab) return s; let t = s; while (t.length > 3 && width(t + '…') > maxLab) t = t.slice(0, -1); return t + '…'; };
+  const labels = rows.map(r => fit(fmt ? fmt(r.key) : r.key));
+  const lw = d3.max(labels, width); const vw = width(short(d3.max(rows, r => r.total)) + ' млн') + 4; meas.remove();
+  const x0 = lw + 12, x = d3.scaleLinear([0, d3.max(rows, r => r.total) || 1], [0, Math.max(10, W - vw - 10 - x0)]);
+  const g = svg.selectAll('g.r').data(rows).join('g').attr('class', 'r').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + gap / 2})`);
+  g.append('text').attr('x', x0 - 10).attr('y', bh / 2).attr('dy', '0.35em').attr('text-anchor', 'end').attr('font-size', fs).attr('fill', '#002346').text((d, i) => labels[i]);
+  g.append('rect').attr('x', x0).attr('height', bh).attr('width', W - vw - 10 - x0).attr('rx', 6).attr('fill', '#F5F8FB');
+  g.append('rect').attr('x', x0).attr('height', bh).attr('width', d => Math.max(0, x(d.own))).attr('fill', OWN).attr('rx', 4);
+  g.append('rect').attr('x', d => x0 + x(d.own) + (d.own > 0 ? 1.5 : 0)).attr('height', bh).attr('width', d => Math.max(0, x(d.credit) - (d.own > 0 ? 1.5 : 0))).attr('fill', CREDIT).attr('rx', 4);
+  g.append('text').attr('x', d => x0 + x(d.total) + 8).attr('y', bh / 2).attr('dy', '0.35em').attr('font-size', fs).attr('font-weight', 600).attr('fill', '#002346').text(d => short(d.total) + (d.total < 1e5 ? '' : ' млн'));
+  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent')
+    .on('mousemove', function (ev, d) {
+      g.attr('opacity', o => o === d ? 1 : .45);
+      tip.style('display', 'block').html('');
+      tip.append('div').attr('class', 'h').text(fmt ? fmt(d.key) : d.key);
+      [['Собственные', d.own, OWN], ['Кредит', d.credit, CREDIT]].forEach(([n, v, c]) => { const l = tip.append('div').attr('class', 'r'); l.append('span').attr('class', 'sw').style('background', c); l.append('span').text(`${n}: ${mln(v)} · ${pct(d.total ? v / d.total : 0)}`); });
+      tip.append('div').style('font-weight', 600).style('margin-top', '4px').text(`Итого: ${mln(d.total)}`);
+      const [mx, my] = d3.pointer(ev, el); const tw = tip.node().offsetWidth;
+      tip.style('left', Math.min(Math.max(0, mx + 14), el.clientWidth - tw) + 'px').style('top', (my + 16) + 'px');
+    })
+    .on('mouseleave', () => { g.attr('opacity', 1); tip.style('display', 'none'); });
+}
+
+function renderCharts(rows) {
+  const dir = agg(rows, 'direction'), ent = agg(rows, 'entity');
+  insight('i-dir', dir); insight('i-ent', ent);
+  hbar(document.querySelector('#c-dir .chart'), dir);
+  hbar(document.querySelector('#c-ent .chart'), ent);
+  hbar(document.querySelector('#c-art .chart'), agg(rows, 'article', 12));
+  hbar(document.querySelector('#c-prj .chart'), agg(rows, 'project'));
+  hbar(document.querySelector('#c-cp .chart'), agg(rows, 'counterparty_type'));
+  hbar(document.querySelector('#c-day .chart'), agg(rows, 'date').sort((a, b) => a.key < b.key ? -1 : 1), s => `${dayFmt(s)}, ${dayName(s)}`);
+}
+
+function cell(tr, text, cls) { const td = tr.insertCell(); td.textContent = text; if (cls) td.className = cls; return td; }
+
+function drawIn() {
+  const tb = document.querySelector('#tin tbody'); tb.innerHTML = '';
+  IN_ROWS.slice().sort((a, b) => b.amount - a.amount).forEach(r => {
+    const tr = tb.insertRow(); cell(tr, dayFmt(r.date)); cell(tr, r.entity); cell(tr, r.counterparty_type); cell(tr, r.subarticle, 'hide-n'); cell(tr, rub(r.amount), 'num amt');
+  });
+}
+
+// ---------- approval (static, from the registry) ----------
+const stOf = r => ({approved: r.approved === 'да'});
+function applyMarks() {
+  const rows = filtered();
+  let yN = 0, yS = 0, nN = 0, nS = 0;
+  rows.forEach(r => { if (stOf(r).approved) { yN++; yS += r.amount; } else { nN++; nS += r.amount; } });
+  const sum = $('appr-sum'); sum.textContent = '';
+  sum.append(Object.assign(document.createElement('span'), {className: 'pill ok', textContent: `✓ Согласовано: ${yN} из ${rows.length} · ${mln(yS)}`}),
+             Object.assign(document.createElement('span'), {className: 'pill ' + (nN ? 'no' : 'own'), textContent: `Не согласовано: ${nN} · ${mln(nS)}`}));
+}
+
+let sortK = 'amount', sortDir = -1;
+document.querySelectorAll('#tpay th.sortable').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.k; if (sortK === k) sortDir = -sortDir; else { sortK = k; sortDir = k === 'amount' ? -1 : 1; }
+  document.querySelectorAll('#tpay th').forEach(t => t.classList.remove('sorted', 'asc')); th.classList.add('sorted'); if (sortDir > 0) th.classList.add('asc');
+  drawTable();
+}));
+
+function drawTable() {
+  const tb = document.querySelector('#tpay tbody'); tb.innerHTML = '';
+  let rows = filtered().map(r => ({...r, ok: stOf(r).approved ? 1 : 0})).filter(r => (!F.appr || (F.appr === 'yes') === (r.ok === 1)) &&
+    (!F.q || [r.entity, r.subarticle, r.article, r.project, r.direction].join(' ').toLowerCase().includes(F.q)));
+  rows.sort((a, b) => { const x = a[sortK], y = b[sortK]; return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'ru')) * sortDir; });
+  if (!rows.length) { const tr = tb.insertRow(); const td = cell(tr, 'Нет платежей по выбранным фильтрам', 'empty'); td.colSpan = 7; }
+  rows.forEach(r => {
+    const tr = tb.insertRow();
+    cell(tr, dayFmt(r.date));
+    cell(tr, r.entity);
+    const cp = cell(tr, r.counterparty_type); cp.appendChild(Object.assign(document.createElement('span'), {className: 'sm', textContent: `${r.direction} · ${r.project}`}));
+    cell(tr, r.subarticle, 'hide-n');
+    const tdF = cell(tr, ''); tdF.appendChild(Object.assign(document.createElement('span'), {className: 'pill ' + (r.funding === 'Кредит' ? 'credit' : 'own'), textContent: r.funding}));
+    cell(tr, rub(r.amount), 'num amt');
+    const tdA = cell(tr, ''); tdA.appendChild(Object.assign(document.createElement('span'), {className: 'pill ' + (r.ok ? 'ok' : 'no'), textContent: r.ok ? '✓ Согласован' : 'Не согласован'}));
+  });
+  applyMarks();
+}
+
+function renderAll() { const rows = filtered(); renderKpis(rows); renderCharts(rows); drawTable(); }
+
+drawIn(); renderAll(); markNav();
+let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => renderCharts(filtered()), 150); });
+})();
+</script>
+</body>
+</html>
